@@ -10,7 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['45.13.132.108', 'trackmoney.tsmofficial.in',
                  'www.trackmoney.tsmofficial.in']
 CSRF_TRUSTED_ORIGINS = [
-    "trackmoney.tsmofficial.in", "www.trackmoney.tsmofficial.in"
+    "trackmoney.tsmofficial.in", "www.trackmoney.tsmofficial.in", 'https://trackmoney.tsmofficial.in/', 'https://www.trackmoney.tsmofficial.in/'
 ]
 
 # Installed Applicationsj
