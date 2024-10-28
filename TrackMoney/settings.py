@@ -88,11 +88,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "trackmoney.tsmofficial.in", "www.trackmoney.tsmofficial.in", 'https://trackmoney.tsmofficial.in/', 'https://www.trackmoney.tsmofficial.in/'
-]
+
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://trackmoney.tsmofficial.in', 'https://www.trackmoney.tsmofficial.in']
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
