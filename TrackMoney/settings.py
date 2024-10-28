@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken', 
     'bank',
     'django_select2',  # Django-select2 app
 ]
@@ -57,10 +58,11 @@ TEMPLATES = [
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
+
 
 # WSGI Application
 WSGI_APPLICATION = 'TrackMoney.wsgi.application'
