@@ -9,9 +9,7 @@ SECRET_KEY = 'django-insecure-_pfqvyy$fk__ugg()iki6$^pjb=0m89i6gs-dq+d&pv#(^3uqd
 DEBUG = True
 ALLOWED_HOSTS = ['45.13.132.108', 'trackmoney.tsmofficial.in',
                  'www.trackmoney.tsmofficial.in']
-CSRF_TRUSTED_ORIGINS = [
-    "trackmoney.tsmofficial.in", "www.trackmoney.tsmofficial.in", 'https://trackmoney.tsmofficial.in/', 'https://www.trackmoney.tsmofficial.in/'
-]
+
 
 # Installed Applicationsj
 INSTALLED_APPS = [
@@ -90,6 +88,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "trackmoney.tsmofficial.in", "www.trackmoney.tsmofficial.in", 'https://trackmoney.tsmofficial.in/', 'https://www.trackmoney.tsmofficial.in/'
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
