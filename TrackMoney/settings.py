@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken', 
+    'rest_framework.authtoken',
     'bank',
     'django_select2',  # Django-select2 app
 ]
@@ -111,7 +111,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Additional directories with static files for development (ensure this folder exists)
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+MEDIA_URL = '/media/'  # This is the URL prefix for accessing media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default Primary Key Field Type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

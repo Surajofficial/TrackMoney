@@ -36,7 +36,7 @@ class Bank(LocationBase):
     bank_manager = models.CharField(max_length=255)
     contact_number = models.CharField(max_length=15)
     pin_code = models.CharField(max_length=6)
-    bank_logo = models.FileField(upload_to='bank_logos/')
+    bank_logo = models.FileField(upload_to='media/bank_logos/')
 
     def __str__(self):
         return self.bank_name
@@ -49,8 +49,8 @@ class Agent(LocationBase):
     contact_number = models.CharField(max_length=15)
     uid_number = models.CharField(max_length=12)
     birth_date = models.DateField()
-    photo = models.FileField(upload_to='agent_photos/')
-    uid_doc = models.FileField(upload_to='agent_uid_docs/')
+    photo = models.FileField(upload_to='media/agent_photos/')
+    uid_doc = models.FileField(upload_to='media/agent_uid_docs/')
 
     def __str__(self):
         return self.agent_name
@@ -63,8 +63,8 @@ class UserDetail(LocationBase):
     contact_number = models.CharField(max_length=15)
     pin_code = models.CharField(max_length=6)
     uid_number = models.CharField(max_length=12)
-    uid_doc = models.FileField(upload_to='user_uid_docs/')
-    user_photo = models.FileField(upload_to='user_photos/')
+    uid_doc = models.FileField(upload_to='media/user_uid_docs/')
+    user_photo = models.FileField(upload_to='media/user_photos/')
     business_name = models.CharField(max_length=255)
     business_type = models.CharField(max_length=255)  # Dropdown in frontend
 
@@ -119,7 +119,7 @@ class UserLoanAddStatement(LocationBase):
     remaining_loan = models.DecimalField(max_digits=10, decimal_places=2)
     loan_close_date = models.DateField()
     agreement_copy = models.FileField(
-        upload_to='loan_agreements/', null=True, blank=True)
+        upload_to='media/loan_agreements/', null=True, blank=True)
 
 
 # UserLoanStatement model inheriting LocationBase
@@ -139,11 +139,11 @@ class UserLoanStatement(LocationBase):
 class BankPrivacyPolicy(LocationBase):
     bank = models.ForeignKey(
         Bank, on_delete=models.CASCADE, related_name="privacy_policies")
-    policy_doc = models.FileField(upload_to='bank_privacy_policies/')
+    policy_doc = models.FileField(upload_to='media/bank_privacy_policies/')
 
 
 # BankAbout model inheriting LocationBase
 class BankAbout(LocationBase):
     bank = models.ForeignKey(
         Bank, on_delete=models.CASCADE, related_name="about_info")
-    about_doc = models.FileField(upload_to='bank_about_docs/')
+    about_doc = models.FileField(upload_to='media/bank_about_docs/')
