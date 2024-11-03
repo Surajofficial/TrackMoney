@@ -1,136 +1,182 @@
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import (
-    Bank, Agent, UserDetail, AgentAssignedToBank, UserAssignedToBank,
-    UserPaymentStatement, UserLoanAddStatement, UserLoanStatement,
-    BankPrivacyPolicy, BankAbout, District, State
-)
-from .serializers import (
-    BankSerializer, AgentSerializer, UserDetailSerializer,
-    AgentAssignedToBankSerializer, UserAssignedToBankSerializer,
-    UserPaymentStatementSerializer, UserLoanAddStatementSerializer,
-    UserLoanStatementSerializer, BankPrivacyPolicySerializer,
-    BankAboutSerializer
-)
-
+from .models import *
+from .serializers import *
+from .filters import *
 # Bank CRUD Views
 
 
-class BankListCreateView(generics.ListCreateAPIView):
+class BaseListCreateView(generics.ListCreateAPIView):
+    filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        # Order by a default field in descending order
+        return self.queryset.order_by('-id')
+
+
+class BaseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    pass
+
+
+class BankListCreateView(BaseListCreateView):
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['state', 'district']
+    filterset_class = BankFilter
 
 
-class BankRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class BankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
 
 # Agent CRUD Views
 
 
-class AgentListCreateView(generics.ListCreateAPIView):
+class AgentListCreateView(BaseListCreateView):
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
+    filterset_class = AgentFilter
 
 
-class AgentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class AgentRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
 
 # User Detail CRUD Views
 
 
-class UserDetailListCreateView(generics.ListCreateAPIView):
+class UserDetailListCreateView(BaseListCreateView):
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
+    filterset_class = UserDetailFilter
 
 
-class UserDetailRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UserDetailRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
 
 # Agent Assigned to Bank CRUD Views
 
 
-class AgentAssignedToBankListCreateView(generics.ListCreateAPIView):
+class AgentAssignedToBankListCreateView(BaseListCreateView):
     queryset = AgentAssignedToBank.objects.all()
     serializer_class = AgentAssignedToBankSerializer
+    filterset_class = AgentAssignedToBankFilter
 
 
-class AgentAssignedToBankRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class AgentAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = AgentAssignedToBank.objects.all()
     serializer_class = AgentAssignedToBankSerializer
 
 # User Assigned to Bank CRUD Views
 
 
-class UserAssignedToBankListCreateView(generics.ListCreateAPIView):
+class UserAssignedToBankListCreateView(BaseListCreateView):
     queryset = UserAssignedToBank.objects.all()
     serializer_class = UserAssignedToBankSerializer
+    filterset_class = UserAssignedToBankFilter
 
 
-class UserAssignedToBankRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UserAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = UserAssignedToBank.objects.all()
     serializer_class = UserAssignedToBankSerializer
 
 # User Payment Statement CRUD Views
 
 
-class UserPaymentStatementListCreateView(generics.ListCreateAPIView):
+class UserPaymentStatementListCreateView(BaseListCreateView):
     queryset = UserPaymentStatement.objects.all()
     serializer_class = UserPaymentStatementSerializer
+    filterset_class = UserPaymentStatementFilter
 
 
-class UserPaymentStatementRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UserPaymentStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = UserPaymentStatement.objects.all()
     serializer_class = UserPaymentStatementSerializer
 
 # User Loan Add Statement CRUD Views
 
 
-class UserLoanAddStatementListCreateView(generics.ListCreateAPIView):
+class UserLoanAddStatementListCreateView(BaseListCreateView):
     queryset = UserLoanAddStatement.objects.all()
     serializer_class = UserLoanAddStatementSerializer
+    filterset_class = UserLoanAddStatementFilter
 
 
-class UserLoanAddStatementRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UserLoanAddStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = UserLoanAddStatement.objects.all()
     serializer_class = UserLoanAddStatementSerializer
 
 # User Loan Statement CRUD Views
 
 
-class UserLoanStatementListCreateView(generics.ListCreateAPIView):
+class UserLoanStatementListCreateView(BaseListCreateView):
     queryset = UserLoanStatement.objects.all()
     serializer_class = UserLoanStatementSerializer
+    filterset_class = UserLoanStatementFilter
 
 
-class UserLoanStatementRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UserLoanStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = UserLoanStatement.objects.all()
     serializer_class = UserLoanStatementSerializer
 
 # Bank Privacy Policy CRUD Views
 
 
-class BankPrivacyPolicyListCreateView(generics.ListCreateAPIView):
+class BankPrivacyPolicyListCreateView(BaseListCreateView):
     queryset = BankPrivacyPolicy.objects.all()
     serializer_class = BankPrivacyPolicySerializer
+    filterset_class = BankPrivacyPolicyFilter
 
 
-class BankPrivacyPolicyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class BankPrivacyPolicyRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = BankPrivacyPolicy.objects.all()
     serializer_class = BankPrivacyPolicySerializer
 
 # Bank About CRUD Views
 
 
-class BankAboutListCreateView(generics.ListCreateAPIView):
+class BankAboutListCreateView(BaseListCreateView):
+    queryset = BankAbout.objects.all()
+    serializer_class = BankAboutSerializer
+    filterset_class = BankAboutFilter
+
+
+class BankAboutRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     queryset = BankAbout.objects.all()
     serializer_class = BankAboutSerializer
 
+# State CRUD Views
+class StateListCreateView(generics.ListCreateAPIView):
+    queryset = State.objects.all()
+    serializer_class = StateSerializer
 
-class BankAboutRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BankAbout.objects.all()
-    serializer_class = BankAboutSerializer
+class StateRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = State.objects.all()
+    serializer_class = StateSerializer
+
+# District CRUD Views
+class DistrictListCreateView(generics.ListCreateAPIView):
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+
+class DistrictRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+
+# Taluka CRUD Views
+class TalukaListCreateView(generics.ListCreateAPIView):
+    queryset = Taluka.objects.all()
+    serializer_class = TalukaSerializer
+
+class TalukaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Taluka.objects.all()
+    serializer_class = TalukaSerializer
+
+# Village CRUD Views
+class VillageListCreateView(generics.ListCreateAPIView):
+    queryset = Village.objects.all()
+    serializer_class = VillageSerializer
+
+class VillageRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Village.objects.all()
+    serializer_class = VillageSerializer

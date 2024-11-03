@@ -5,7 +5,6 @@ from django.db import models
 
 class State(models.Model):
     name = models.CharField(max_length=100, unique=True)
-
     def __str__(self):
         return self.name
 
@@ -19,11 +18,33 @@ class District(models.Model):
         return f"{self.name} ({self.state.name})"
 
 
+class Taluka(models.Model):
+    state = models.ForeignKey(State, on_delete=models.CASCADE, default="")
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, default="")
+    name = models.CharField(max_length=200, default="")
+
+    def __str__(self):
+        return f"{self.name}({self.district.name}) ({self.state.name})"
+
+
+class Village(models.Model):
+    state = models.ForeignKey(State, on_delete=models.CASCADE, default="")
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, default="")
+    taluka = models.ForeignKey(
+        Taluka, on_delete=models.CASCADE, default="")
+    name = models.CharField(max_length=200, default="")
+
+    def __str__(self):
+         return f"{self.name} ({self.taluka.name}) ({self.district.name}) ({self.state.name})"
+
+
 class LocationBase(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    taluka = models.CharField(max_length=100)
-    village = models.CharField(max_length=100)
+    taluka = models.ForeignKey(Taluka, on_delete=models.CASCADE)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True  # This will make it a base class without a database table

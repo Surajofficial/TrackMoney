@@ -1,16 +1,5 @@
 from django.urls import path
-from .views import (
-    BankListCreateView, BankRetrieveUpdateDestroyView,
-    AgentListCreateView, AgentRetrieveUpdateDestroyView,
-    UserDetailListCreateView, UserDetailRetrieveUpdateDestroyView,
-    AgentAssignedToBankListCreateView, AgentAssignedToBankRetrieveUpdateDestroyView,
-    UserAssignedToBankListCreateView, UserAssignedToBankRetrieveUpdateDestroyView,
-    UserPaymentStatementListCreateView, UserPaymentStatementRetrieveUpdateDestroyView,
-    UserLoanAddStatementListCreateView, UserLoanAddStatementRetrieveUpdateDestroyView,
-    UserLoanStatementListCreateView, UserLoanStatementRetrieveUpdateDestroyView,
-    BankPrivacyPolicyListCreateView, BankPrivacyPolicyRetrieveUpdateDestroyView,
-    BankAboutListCreateView, BankAboutRetrieveUpdateDestroyView
-)
+from .views import *
 
 urlpatterns = [
     # Bank CRUD Endpoints
@@ -70,4 +59,18 @@ urlpatterns = [
          name='bank-about-list-create'),
     path('bank-about/<int:pk>/',
          BankAboutRetrieveUpdateDestroyView.as_view(), name='bank-about-detail'),
+         path('states/', StateListCreateView.as_view(), name='state-list-create'),
+    path('states/<int:pk>/', StateRetrieveUpdateDestroyView.as_view(), name='state-detail'),
+
+    # District URLs
+    path('districts/', DistrictListCreateView.as_view(), name='district-list-create'),
+    path('districts/<int:pk>/', DistrictRetrieveUpdateDestroyView.as_view(), name='district-detail'),
+
+    # Taluka URLs
+    path('talukas/', TalukaListCreateView.as_view(), name='taluka-list-create'),
+    path('talukas/<int:pk>/', TalukaRetrieveUpdateDestroyView.as_view(), name='taluka-detail'),
+
+    # Village URLs
+    path('villages/', VillageListCreateView.as_view(), name='village-list-create'),
+    path('villages/<int:pk>/', VillageRetrieveUpdateDestroyView.as_view(), name='village-detail'),
 ]

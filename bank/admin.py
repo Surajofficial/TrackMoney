@@ -1,10 +1,6 @@
 from django.contrib import admin
 from .forms import AgentAdminForm
-from .models import (
-    State, District, Bank, Agent, UserDetail, AgentAssignedToBank,
-    UserAssignedToBank, UserPaymentStatement, UserLoanAddStatement,
-    UserLoanStatement, BankPrivacyPolicy, BankAbout
-)
+from .models import *
 
 
 # Admin setup for State and District
@@ -18,6 +14,16 @@ class StateAdmin(admin.ModelAdmin):
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ('name', 'state')
     list_filter = ('state',)
+    search_fields = ('name',)
+@admin.register(Taluka)
+class TalukaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'state','district')
+    list_filter = ('state','district')
+    search_fields = ('name',)
+@admin.register(Village)
+class VillageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'state','district','taluka')
+    list_filter = ('state','district','taluka')
     search_fields = ('name',)
 
 

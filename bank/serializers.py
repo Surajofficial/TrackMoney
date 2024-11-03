@@ -1,9 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    Bank, Agent, UserDetail, AgentAssignedToBank, UserAssignedToBank,
-    UserPaymentStatement, UserLoanAddStatement, UserLoanStatement,
-    BankPrivacyPolicy, BankAbout, State, District
-)
+from .models import *
 
 # State and District serializers to use as nested serializers
 
@@ -21,10 +17,31 @@ class DistrictSerializer(serializers.ModelSerializer):
     class Meta:
         model = District
         fields = ['id', 'name', 'state']
+class TalukaSerializer(serializers.ModelSerializer):
+    # Include state and district details as nested serializers for read-only display
+    state = StateSerializer(read_only=True)
+    district = DistrictSerializer(read_only=True)
+    # Allow setting state and district by ID
+    state_id = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), source='state')
+    district_id = serializers.PrimaryKeyRelatedField(queryset=District.objects.all(), source='district')
 
+    class Meta:
+        model = Taluka
+        fields = ['id', 'name', 'state', 'state_id', 'district', 'district_id'] 
+class VillageSerializer(serializers.ModelSerializer):
+    # Include state, district, and taluka details as nested serializers for read-only display
+    state = StateSerializer(read_only=True)
+    district = DistrictSerializer(read_only=True)
+    taluka = TalukaSerializer(read_only=True)
 
-# Main serializers with select2 compatible fields
+    # Writable fields to set state, district, and taluka by ID
+    state_id = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), source='state')
+    district_id = serializers.PrimaryKeyRelatedField(queryset=District.objects.all(), source='district')
+    taluka_id = serializers.PrimaryKeyRelatedField(queryset=Taluka.objects.all(), source='taluka')
 
+    class Meta:
+        model = Village
+        fields = ['id', 'name', 'state', 'state_id', 'district', 'district_id', 'taluka', 'taluka_id']
 class BankSerializer(serializers.ModelSerializer):
     state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all())
     district = serializers.PrimaryKeyRelatedField(
