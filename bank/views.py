@@ -1,5 +1,5 @@
 from rest_framework import generics
-from dal import autocomplete
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     Bank, Agent, UserDetail, AgentAssignedToBank, UserAssignedToBank,
     UserPaymentStatement, UserLoanAddStatement, UserLoanStatement,
@@ -19,6 +19,8 @@ from .serializers import (
 class BankListCreateView(generics.ListCreateAPIView):
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['state', 'district']
 
 
 class BankRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
