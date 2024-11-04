@@ -11,65 +11,149 @@ class StateSerializer(serializers.ModelSerializer):
 
 
 class DistrictSerializer(serializers.ModelSerializer):
-    # Include state details as nested serializer
     state = StateSerializer(read_only=True)
 
     class Meta:
         model = District
         fields = ['id', 'name', 'state']
+
+
 class TalukaSerializer(serializers.ModelSerializer):
-    # Include state and district details as nested serializers for read-only display
     state = StateSerializer(read_only=True)
     district = DistrictSerializer(read_only=True)
-    # Allow setting state and district by ID
-    state_id = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), source='state')
-    district_id = serializers.PrimaryKeyRelatedField(queryset=District.objects.all(), source='district')
+    state = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all(), source='state')
+    district = serializers.PrimaryKeyRelatedField(
+        queryset=District.objects.all(), source='district')
 
     class Meta:
         model = Taluka
-        fields = ['id', 'name', 'state', 'state_id', 'district', 'district_id'] 
+        fields = ['id', 'name', 'state', 'district']
+
+
 class VillageSerializer(serializers.ModelSerializer):
-    # Include state, district, and taluka details as nested serializers for read-only display
     state = StateSerializer(read_only=True)
     district = DistrictSerializer(read_only=True)
     taluka = TalukaSerializer(read_only=True)
-
-    # Writable fields to set state, district, and taluka by ID
-    state_id = serializers.PrimaryKeyRelatedField(queryset=State.objects.all(), source='state')
-    district_id = serializers.PrimaryKeyRelatedField(queryset=District.objects.all(), source='district')
-    taluka_id = serializers.PrimaryKeyRelatedField(queryset=Taluka.objects.all(), source='taluka')
+    state = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all(), source='state')
+    district = serializers.PrimaryKeyRelatedField(
+        queryset=District.objects.all(), source='district')
+    taluka = serializers.PrimaryKeyRelatedField(
+        queryset=Taluka.objects.all(), source='taluka')
 
     class Meta:
         model = Village
-        fields = ['id', 'name', 'state', 'state_id', 'district', 'district_id', 'taluka', 'taluka_id']
+        fields = ['id', 'name', 'state', 'district', 'taluka']
+
+# Bank Serializer with dynamic fields for fetching data
+
+
 class BankSerializer(serializers.ModelSerializer):
-    state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all())
+    state = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all())
     district = serializers.PrimaryKeyRelatedField(
         queryset=District.objects.all())
+    taluka = serializers.PrimaryKeyRelatedField(
+        queryset=Taluka.objects.all())
+    village = serializers.PrimaryKeyRelatedField(
+        queryset=Village.objects.all())
+
+    # Read-only fields to include details when fetching data
+    state_name = serializers.SerializerMethodField()
+    district_name = serializers.SerializerMethodField()
+    taluka_name = serializers.SerializerMethodField()
+    village_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Bank
         fields = '__all__'
 
+    def get_state_name(self, obj):
+        return obj.state.name if obj.state else None
+
+    def get_district_name(self, obj):
+        return obj.district.name if obj.district else None
+
+    def get_taluka_name(self, obj):
+        return obj.taluka.name if obj.taluka else None
+
+    def get_village_name(self, obj):
+        return obj.village.name if obj.village else None
+
+# Agent Serializer
+
 
 class AgentSerializer(serializers.ModelSerializer):
-    state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all())
+    state = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all())
     district = serializers.PrimaryKeyRelatedField(
         queryset=District.objects.all())
+    taluka = serializers.PrimaryKeyRelatedField(
+        queryset=Taluka.objects.all())
+    village = serializers.PrimaryKeyRelatedField(
+        queryset=Village.objects.all())
+
+    state_name = serializers.SerializerMethodField()
+    district_name = serializers.SerializerMethodField()
+    taluka_name = serializers.SerializerMethodField()
+    village_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Agent
-        fields = '__all__'
+        fields = [
+            'id', 'agent_name', 'state', 'district', 'taluka', 'village',
+            'state_name', 'district_name', 'taluka_name', 'village_name',
+            'address', 'contact_number', 'uid_number', 'birth_date', 'photo', 'uid_doc'
+        ]
+
+    def get_state_name(self, obj):
+        return obj.state.name if obj.state else None
+
+    def get_district_name(self, obj):
+        return obj.district.name if obj.district else None
+
+    def get_taluka_name(self, obj):
+        return obj.taluka.name if obj.taluka else None
+
+    def get_village_name(self, obj):
+        return obj.village.name if obj.village else None
+
+# UserDetail Serializer
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    state = serializers.PrimaryKeyRelatedField(queryset=State.objects.all())
+    state = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all())
     district = serializers.PrimaryKeyRelatedField(
         queryset=District.objects.all())
+    taluka = serializers.PrimaryKeyRelatedField(
+        queryset=Taluka.objects.all())
+    village = serializers.PrimaryKeyRelatedField(
+        queryset=Village.objects.all())
+
+    state_name = serializers.SerializerMethodField()
+    district_name = serializers.SerializerMethodField()
+    taluka_name = serializers.SerializerMethodField()
+    village_name = serializers.SerializerMethodField()
 
     class Meta:
         model = UserDetail
         fields = '__all__'
+
+    def get_state_name(self, obj):
+        return obj.state.name if obj.state else None
+
+    def get_district_name(self, obj):
+        return obj.district.name if obj.district else None
+
+    def get_taluka_name(self, obj):
+        return obj.taluka.name if obj.taluka else None
+
+    def get_village_name(self, obj):
+        return obj.village.name if obj.village else None
+
+# AgentAssignedToBank Serializer
 
 
 class AgentAssignedToBankSerializer(serializers.ModelSerializer):
@@ -80,6 +164,8 @@ class AgentAssignedToBankSerializer(serializers.ModelSerializer):
         model = AgentAssignedToBank
         fields = '__all__'
 
+# UserAssignedToBank Serializer
+
 
 class UserAssignedToBankSerializer(serializers.ModelSerializer):
     bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all())
@@ -89,6 +175,8 @@ class UserAssignedToBankSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAssignedToBank
         fields = '__all__'
+
+# UserPaymentStatement Serializer
 
 
 class UserPaymentStatementSerializer(serializers.ModelSerializer):
@@ -102,6 +190,8 @@ class UserPaymentStatementSerializer(serializers.ModelSerializer):
         model = UserPaymentStatement
         fields = '__all__'
 
+# UserLoanAddStatement Serializer
+
 
 class UserLoanAddStatementSerializer(serializers.ModelSerializer):
     bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all())
@@ -111,6 +201,8 @@ class UserLoanAddStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserLoanAddStatement
         fields = '__all__'
+
+# UserLoanStatement Serializer
 
 
 class UserLoanStatementSerializer(serializers.ModelSerializer):
@@ -122,6 +214,8 @@ class UserLoanStatementSerializer(serializers.ModelSerializer):
         model = UserLoanStatement
         fields = '__all__'
 
+# BankPrivacyPolicy Serializer
+
 
 class BankPrivacyPolicySerializer(serializers.ModelSerializer):
     bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all())
@@ -129,6 +223,8 @@ class BankPrivacyPolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = BankPrivacyPolicy
         fields = '__all__'
+
+# BankAbout Serializer
 
 
 class BankAboutSerializer(serializers.ModelSerializer):
