@@ -56,7 +56,7 @@ class Bank(LocationBase):
     bank_name = models.CharField(max_length=255)
     address = models.TextField()
     bank_manager = models.CharField(max_length=255)
-    contact_number = models.CharField(max_length=15)
+    contact_number = models.CharField(max_length=15, unique=True)
     pin_code = models.CharField(max_length=6)
     bank_logo = models.FileField(upload_to='bank_logos/')
 
@@ -68,7 +68,7 @@ class Bank(LocationBase):
 class Agent(LocationBase):
     agent_name = models.CharField(max_length=255)
     address = models.TextField()
-    contact_number = models.CharField(max_length=15)
+    contact_number = models.CharField(max_length=15, unique=True)
     uid_number = models.CharField(max_length=12)
     birth_date = models.DateField()
     photo = models.FileField(upload_to='agent_photos/')
@@ -82,7 +82,7 @@ class Agent(LocationBase):
 class UserDetail(LocationBase):
     full_name = models.CharField(max_length=255)
     address = models.TextField()
-    contact_number = models.CharField(max_length=15)
+    contact_number = models.CharField(max_length=15, unique=True)
     pin_code = models.CharField(max_length=6)
     uid_number = models.CharField(max_length=12)
     uid_doc = models.FileField(upload_to='user_uid_docs/')

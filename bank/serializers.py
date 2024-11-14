@@ -50,6 +50,21 @@ class VillageSerializer(serializers.ModelSerializer):
 # Bank Serializer with dynamic fields for fetching data
 
 
+class BankLoginSerializer(serializers.Serializer):
+    contact_number = serializers.CharField(max_length=15)
+    otp = serializers.CharField(max_length=6)
+
+
+class AgentLoginSerializer(serializers.Serializer):
+    contact_number = serializers.CharField(max_length=15)
+    otp = serializers.CharField(max_length=6)
+
+
+class UserDetailLoginSerializer(serializers.Serializer):
+    contact_number = serializers.CharField(max_length=15)
+    otp = serializers.CharField(max_length=6)
+
+
 class BankSerializer(serializers.ModelSerializer):
     state_id = serializers.PrimaryKeyRelatedField(
         queryset=State.objects.all(), source='state')

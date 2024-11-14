@@ -3,7 +3,132 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
 from .filters import *
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 # Bank CRUD Views
+from django.core.cache import cache
+import random
+from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated
+
+
+def get_tokens_for_user(user, user_type):
+    refresh = RefreshToken.for_user(user)
+    refresh['user_type'] = user_type
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+
+def generate_otp(contact_number):
+    otp = random.randint(100000, 999999)  # Generate 6-digit OTP
+    # Store OTP with 5-minute expiration
+    cache.set(contact_number, otp, timeout=300)
+    # Implement sending OTP via SMS or Email here
+    print(f"OTP for {contact_number} is {otp}")  # For testing, print the OTP
+    return otp
+
+
+class SendOTPView(APIView):
+    def post(self, request):
+        contact_number = request.data.get("contact_number")
+        if not contact_number:
+            return Response({'error': 'Contact number is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generate and send OTP
+        otp = generate_otp(contact_number)
+        return Response({'message': f'OTP sent successfully {otp}'}, status=status.HTTP_200_OK)
+
+
+class IsBankUser(BasePermission):
+    def has_permission(self, request, view):
+        user_type = request.auth.get('user_type') if request.auth else None
+        return user_type == 'bank'
+
+
+class IsAgentUser(BasePermission):
+    def has_permission(self, request, view):
+        user_type = request.auth.get('user_type') if request.auth else None
+        return user_type == 'agent'
+
+
+class IsUserDetailUser(BasePermission):
+    def has_permission(self, request, view):
+        user_type = request.auth.get('user_type') if request.auth else None
+        return user_type == 'user_detail'
+
+
+class BankLoginView(APIView):
+    def post(self, request):
+        serializer = BankLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            contact_number = serializer.validated_data['contact_number']
+            otp = serializer.validated_data['otp']
+
+            try:
+                bank_user = Bank.objects.filter(
+                    contact_number=contact_number).first()
+                # Replace with actual OTP verification
+                cached_otp = cache.get(contact_number)
+                # return Response(cached_otp, status=status.HTTP_200_OK)
+                # Assuming '123456' is the correct OTP for demonstration
+                if cached_otp and str(cached_otp) == otp:
+                    tokens = get_tokens_for_user(bank_user, user_type='bank')
+
+                    return Response(tokens, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+            except Bank.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AgentLoginView(APIView):
+    def post(self, request):
+        serializer = AgentLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            contact_number = serializer.validated_data['contact_number']
+            otp = serializer.validated_data['otp']
+
+            try:
+                agent_user = Agent.objects.get(contact_number=contact_number)
+                cached_otp = cache.get(contact_number)
+                if cached_otp and str(cached_otp) == otp:
+                    tokens = get_tokens_for_user(agent_user, user_type='agent')
+                    return Response(tokens, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+            except Agent.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailLoginView(APIView):
+    def post(self, request):
+        serializer = UserDetailLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            contact_number = serializer.validated_data['contact_number']
+            otp = serializer.validated_data['otp']
+
+            try:
+                user_detail = UserDetail.objects.get(
+                    contact_number=contact_number)
+                cached_otp = cache.get(contact_number)
+                if cached_otp and str(cached_otp) == otp:
+                    tokens = get_tokens_for_user(
+                        user_detail, user_type='user_detail')
+                    return Response(tokens, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+            except UserDetail.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BaseListCreateView(generics.ListCreateAPIView):
@@ -19,12 +144,14 @@ class BaseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BankListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated, IsBankUser]
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
     filterset_class = BankFilter
 
 
 class BankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated, IsBankUser]
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
 
@@ -32,12 +159,14 @@ class BankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class AgentListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated, IsAgentUser]
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
     filterset_class = AgentFilter
 
 
 class AgentRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated, IsAgentUser]
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
 
@@ -45,12 +174,14 @@ class AgentRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class UserDetailListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated, IsUserDetailUser]
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
     filterset_class = UserDetailFilter
 
 
 class UserDetailRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated, IsUserDetailUser]
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
 
@@ -146,36 +277,48 @@ class BankAboutRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
     serializer_class = BankAboutSerializer
 
 # State CRUD Views
+
+
 class StateListCreateView(generics.ListCreateAPIView):
     queryset = State.objects.all()
     serializer_class = StateSerializer
+
 
 class StateRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = State.objects.all()
     serializer_class = StateSerializer
 
 # District CRUD Views
+
+
 class DistrictListCreateView(generics.ListCreateAPIView):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
+
 
 class DistrictRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
 
 # Taluka CRUD Views
+
+
 class TalukaListCreateView(generics.ListCreateAPIView):
     queryset = Taluka.objects.all()
     serializer_class = TalukaSerializer
+
 
 class TalukaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Taluka.objects.all()
     serializer_class = TalukaSerializer
 
 # Village CRUD Views
+
+
 class VillageListCreateView(generics.ListCreateAPIView):
     queryset = Village.objects.all()
     serializer_class = VillageSerializer
+
 
 class VillageRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Village.objects.all()

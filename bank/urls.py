@@ -59,18 +59,27 @@ urlpatterns = [
          name='bank-about-list-create'),
     path('bank-about/<int:pk>/',
          BankAboutRetrieveUpdateDestroyView.as_view(), name='bank-about-detail'),
-         path('states/', StateListCreateView.as_view(), name='state-list-create'),
-    path('states/<int:pk>/', StateRetrieveUpdateDestroyView.as_view(), name='state-detail'),
+    path('states/', StateListCreateView.as_view(), name='state-list-create'),
+    path('states/<int:pk>/', StateRetrieveUpdateDestroyView.as_view(),
+         name='state-detail'),
 
     # District URLs
-    path('districts/', DistrictListCreateView.as_view(), name='district-list-create'),
-    path('districts/<int:pk>/', DistrictRetrieveUpdateDestroyView.as_view(), name='district-detail'),
+    path('districts/', DistrictListCreateView.as_view(),
+         name='district-list-create'),
+    path('districts/<int:pk>/',
+         DistrictRetrieveUpdateDestroyView.as_view(), name='district-detail'),
 
     # Taluka URLs
     path('talukas/', TalukaListCreateView.as_view(), name='taluka-list-create'),
-    path('talukas/<int:pk>/', TalukaRetrieveUpdateDestroyView.as_view(), name='taluka-detail'),
+    path('talukas/<int:pk>/', TalukaRetrieveUpdateDestroyView.as_view(),
+         name='taluka-detail'),
 
     # Village URLs
     path('villages/', VillageListCreateView.as_view(), name='village-list-create'),
-    path('villages/<int:pk>/', VillageRetrieveUpdateDestroyView.as_view(), name='village-detail'),
+    path('villages/<int:pk>/', VillageRetrieveUpdateDestroyView.as_view(),
+         name='village-detail'),
+    path('login/bank/', BankLoginView.as_view(), name='bank_login'),
+    path('login/agent/', AgentLoginView.as_view(), name='agent_login'),
+    path('login/user/', UserDetailLoginView.as_view(), name='user_detail_login'),
+    path('send-otp/', SendOTPView.as_view(), name='send_otp'),
 ]

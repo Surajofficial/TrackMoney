@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from datetime import timedelta
 # Base Directory Setup
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,7 +9,12 @@ SECRET_KEY = 'django-insecure-_pfqvyy$fk__ugg()iki6$^pjb=0m89i6gs-dq+d&pv#(^3uqd
 DEBUG = True
 ALLOWED_HOSTS = ['45.13.132.108', '127.0.0.1', 'trackmoney.tsmofficial.in',
                  'www.trackmoney.tsmofficial.in']
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
 
 # Installed Applicationsj
 INSTALLED_APPS = [
@@ -59,11 +64,19 @@ TEMPLATES = [
 # REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
-
+SIMPLE_JWT = {
+    # Short lifespan for access tokens
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    # Longer lifespan for refresh tokens
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+}
 # WSGI Application
 WSGI_APPLICATION = 'TrackMoney.wsgi.application'
 
