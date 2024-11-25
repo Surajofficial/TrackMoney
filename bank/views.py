@@ -43,21 +43,6 @@ class SendOTPView(APIView):
         return Response({'message': f'OTP sent successfully {otp}'}, status=status.HTTP_200_OK)
 
 
-class IsBankUser(BasePermission):
-    def has_permission(self, request, view):
-        return True
-
-
-class IsAgentUser(BasePermission):
-    def has_permission(self, request, view):
-        return True
-
-
-class IsUserDetailUser(BasePermission):
-    def has_permission(self, request, view):
-        return True
-
-
 class BankLoginView(APIView):
     def post(self, request):
         serializer = BankLoginSerializer(data=request.data)
@@ -141,14 +126,14 @@ class BaseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BankListCreateView(BaseListCreateView):
-    permission_classes = [IsAuthenticated, IsBankUser]
+    permission_classes = [IsAuthenticated]
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
     filterset_class = BankFilter
 
 
 class BankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
-    permission_classes = [IsAuthenticated, IsBankUser]
+    permission_classes = [IsAuthenticated]
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
 
@@ -156,14 +141,14 @@ class BankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class AgentListCreateView(BaseListCreateView):
-    permission_classes = [IsAuthenticated, IsAgentUser]
+    permission_classes = [IsAuthenticated]
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
     filterset_class = AgentFilter
 
 
 class AgentRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
-    permission_classes = [IsAuthenticated, IsAgentUser]
+    permission_classes = [IsAuthenticated]
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
 
@@ -171,14 +156,14 @@ class AgentRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class UserDetailListCreateView(BaseListCreateView):
-    permission_classes = [IsAuthenticated, IsUserDetailUser]
+    permission_classes = [IsAuthenticated]
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
     filterset_class = UserDetailFilter
 
 
 class UserDetailRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
-    permission_classes = [IsAuthenticated, IsUserDetailUser]
+    permission_classes = [IsAuthenticated]
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
 
@@ -186,12 +171,14 @@ class UserDetailRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class AgentAssignedToBankListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = AgentAssignedToBank.objects.all()
     serializer_class = AgentAssignedToBankSerializer
     filterset_class = AgentAssignedToBankFilter
 
 
 class AgentAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = AgentAssignedToBank.objects.all()
     serializer_class = AgentAssignedToBankSerializer
 
@@ -199,12 +186,14 @@ class AgentAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView
 
 
 class UserAssignedToBankListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = UserAssignedToBank.objects.all()
     serializer_class = UserAssignedToBankSerializer
     filterset_class = UserAssignedToBankFilter
 
 
 class UserAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = UserAssignedToBank.objects.all()
     serializer_class = UserAssignedToBankSerializer
 
@@ -212,12 +201,14 @@ class UserAssignedToBankRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView)
 
 
 class UserPaymentStatementListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = UserPaymentStatement.objects.all()
     serializer_class = UserPaymentStatementSerializer
     filterset_class = UserPaymentStatementFilter
 
 
 class UserPaymentStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = UserPaymentStatement.objects.all()
     serializer_class = UserPaymentStatementSerializer
 
@@ -225,12 +216,14 @@ class UserPaymentStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyVie
 
 
 class UserLoanAddStatementListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = UserLoanAddStatement.objects.all()
     serializer_class = UserLoanAddStatementSerializer
     filterset_class = UserLoanAddStatementFilter
 
 
 class UserLoanAddStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = UserLoanAddStatement.objects.all()
     serializer_class = UserLoanAddStatementSerializer
 
@@ -238,12 +231,14 @@ class UserLoanAddStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyVie
 
 
 class UserLoanStatementListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = UserLoanStatement.objects.all()
     serializer_class = UserLoanStatementSerializer
     filterset_class = UserLoanStatementFilter
 
 
 class UserLoanStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = UserLoanStatement.objects.all()
     serializer_class = UserLoanStatementSerializer
 
@@ -251,12 +246,14 @@ class UserLoanStatementRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class BankPrivacyPolicyListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = BankPrivacyPolicy.objects.all()
     serializer_class = BankPrivacyPolicySerializer
     filterset_class = BankPrivacyPolicyFilter
 
 
 class BankPrivacyPolicyRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = BankPrivacyPolicy.objects.all()
     serializer_class = BankPrivacyPolicySerializer
 
@@ -264,12 +261,14 @@ class BankPrivacyPolicyRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class BankAboutListCreateView(BaseListCreateView):
+    permission_classes = [IsAuthenticated]
     queryset = BankAbout.objects.all()
     serializer_class = BankAboutSerializer
     filterset_class = BankAboutFilter
 
 
 class BankAboutRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
+    permission_classes = [IsAuthenticated]
     queryset = BankAbout.objects.all()
     serializer_class = BankAboutSerializer
 
@@ -277,11 +276,13 @@ class BankAboutRetrieveUpdateDestroyView(BaseRetrieveUpdateDestroyView):
 
 
 class StateListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = State.objects.all()
     serializer_class = StateSerializer
 
 
 class StateRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = State.objects.all()
     serializer_class = StateSerializer
 
@@ -289,11 +290,13 @@ class StateRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class DistrictListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
 
 
 class DistrictRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
 
@@ -301,11 +304,13 @@ class DistrictRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TalukaListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Taluka.objects.all()
     serializer_class = TalukaSerializer
 
 
 class TalukaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Taluka.objects.all()
     serializer_class = TalukaSerializer
 
@@ -313,10 +318,12 @@ class TalukaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class VillageListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Village.objects.all()
     serializer_class = VillageSerializer
 
 
 class VillageRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Village.objects.all()
     serializer_class = VillageSerializer
