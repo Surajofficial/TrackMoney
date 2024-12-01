@@ -10,7 +10,6 @@ from rest_framework import status
 # Bank CRUD Views
 from django.core.cache import cache
 import random
-from rest_framework.permissions import BasePermission
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -115,7 +114,6 @@ class UserDetailLoginView(APIView):
 
 class BaseListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
-
     def get_queryset(self):
         # Order by a default field in descending order
         return self.queryset.order_by('-id')
@@ -126,7 +124,7 @@ class BaseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BankListCreateView(BaseListCreateView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
     filterset_class = BankFilter
